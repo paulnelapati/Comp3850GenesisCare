@@ -49,7 +49,7 @@ def genOptions(names):
         img = cv2.imread(inputPath+name)
         # img = cv2.GaussianBlur(img,(7,7),0)
         edges = cv2.Canny(img,100,200)
-        edges = cv2.GaussianBlur(edges,(5,5),0)
+        #edges = cv2.GaussianBlur(edges,(5,5),0)
         edges = cv2.cvtColor(edges,cv2.COLOR_GRAY2RGB)
         invedges = cv2.bitwise_not(edges)
 
