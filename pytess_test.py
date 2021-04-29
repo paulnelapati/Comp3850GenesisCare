@@ -10,6 +10,7 @@ import numpy as np
 import pytesseract
 import os
 import time
+import re
 timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 
 #from matplotlib import pyplot as plt
@@ -21,7 +22,11 @@ outputType='.csv' # .txt or .csv supported
 def importPics():
     arr = os.listdir(inputPath)
     print(arr)
-    return arr
+    fileList = []
+    for a in arr:
+        if (re.match(".+\.(png|jpg|jpeg)$",a)):
+            fileList.append(a)
+    return fileList
 
 def rotate_image(image, angle):
   image_center = tuple(np.array(image.shape[1::-1]) / 2)
