@@ -7,18 +7,31 @@ Created on Wed Apr 28 15:51:44 2021
 
 import cv2
 import numpy as np
+import os
+import re
  
 ###################################
 widthImg=499 #540
 heightImg =266 #640
+inputPath = "./input/"
 #####################################
  
 cap = cv2.VideoCapture(1)
 cap.set(10,150)
  
+
+def importPics():
+    arr = os.listdir(inputPath)
+    print(arr)
+    fileList = []
+    for a in arr:
+        if (re.match(".+\.(png|jpg|jpeg)$",a)):
+            fileList.append(a)
+    return fileList
+
 def preProcessing(img):
     imgGray = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-    imgBlur = cv2.GaussianBlur(imgGray,(5,5),1)
+    imgBlur = cv2.GaussianBlur(imgGray,(7,7),1)
     imgCanny = cv2.Canny(imgBlur,200,200)
     kernel = np.ones((5,5))
     imgDial = cv2.dilate(imgCanny,kernel,iterations=2)
@@ -98,30 +111,31 @@ def stackImages(scale,imgArray):
         ver = hor
     return ver
  
-# while True:
-img = cv2.imread("./input/single.png")
-# img = cv2.imread("./input/poor_quality.jpeg")
-# img = cv2.Canny(img, 100, 200)
-# img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
-img = cv2.resize(img,(widthImg,heightImg))
-imgContour = img.copy()
- 
-imgThres = preProcessing(img)
-biggest = getContours(imgThres)
-if biggest.size !=0:
-    imgWarped=getWarp(img,biggest)
-    # imageArray = ([img,imgThres],
-    #           [imgContour,imgWarped])
-    imageArray = ([imgContour, imgWarped])
-    cv2.imshow("ImageWarped", imgWarped)
-else:
-    # imageArray = ([img, imgThres],
-    #               [img, img])
-    imageArray = ([imgContour, img])
- 
-stackedImages = stackImages(0.6,imageArray)
-cv2.imshow("WorkFlow", stackedImages)
- 
+names =  importPics()
+for name in names:
+    img = cv2.imread(inputPath+name)
+    # img = cv2.imread("./input/poor_quality.jpeg")
+    # img = cv2.Canny(img, 100, 200)
+    # img = cv2.cvtColor(img,cv2.COLOR_GRAY2RGB)
+    img = cv2.resize(img,(widthImg,heightImg))
+    imgContour = img.copy()
+     
+    imgThres = preProcessing(img)
+    biggest = getContours(imgThres)
+    if biggest.size !=0:
+        imgWarped=getWarp(img,biggest)
+        # imageArray = ([img,imgThres],
+        #           [imgContour,imgWarped])
+        imageArray = ([imgContour, imgWarped])
+        cv2.imshow(name+" ImageWarped", imgWarped)
+    else:
+        # imageArray = ([img, imgThres],
+        #               [img, img])
+        imageArray = ([imgContour, img])
+     
+    stackedImages = stackImages(0.6,imageArray)
+    cv2.imshow(name+" WorkFlow", stackedImages)
+     
 # if cv2.waitKey(1) and 0xFF == ord('q'):
 #     break
 cv2.waitKey(0)
