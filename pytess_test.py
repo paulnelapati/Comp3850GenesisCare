@@ -5,34 +5,45 @@ Created on Mon Mar 22 23:20:56 2021
 @author: Lachlan Matthews
 """
 
+###################################
+
 import cv2
 import numpy as np
 import pytesseract
 import os
 import time
 import re
-timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 
-#from matplotlib import pyplot as plt
+###################################
+
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 inputPath = "./input/"
+inputType = ["png", "jpg", "jpeg"]
 outputPath='./output/'
 outputType='.csv' # .txt or .csv supported
+debuggingPath=outputPath+'Result_'+timestr+"/"
+debugging = True
+
+###################################
 
 def importPics():
     arr = os.listdir(inputPath)
     print(arr)
     fileList = []
+    fileType = inputType[0]
+    for t in inputType:
+        fileType = fileType+"|"+t
     for a in arr:
-        if (re.match(".+\.(png|jpg|jpeg)$",a)):
+        if (re.match(".+\.("+fileType+")$",a)):
             fileList.append(a)
     return fileList
 
-def rotate_image(image, angle):
-  image_center = tuple(np.array(image.shape[1::-1]) / 2)
-  rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
-  result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
-  return result
+# def rotate_image(image, angle):
+#   image_center = tuple(np.array(image.shape[1::-1]) / 2)
+#   rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
+#   result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
+#   return result
 
 def labelImage(img, colour, text, boxes, scale):
     wordList = []
@@ -48,7 +59,7 @@ def labelImage(img, colour, text, boxes, scale):
     #print(wordList)
     return wordList
 
-def genOptions(names):
+def processImages(names):
     wordLists = []
     for name in names:
         img = cv2.imread(inputPath+name)
@@ -64,65 +75,61 @@ def genOptions(names):
         
         localWordList = []
         #whiteback edges
-        wordList = genOption(name, invedges, False, False, 1, 4)
+        wordList = detectText(name, invedges, False, False, 1, 1)
         wordLists.append(wordList)
         localWordList.append(wordList)
-        # genOption(name, invedges, False, False, 4, 4)
-        # genOption(name, invedges, False, False, 8, 4)
-        # genOption(name, invedges, False, False, 16, 5)
         
         #blackback edges
-        wordList = genOption(name, edges, False, False, 1, 3)
+        wordList = detectText(name, edges, False, False, 1, 2)
         wordLists.append(wordList)
         localWordList.append(wordList)
-        # genOption(name, edges, False, False, 4, 3)
-        # genOption(name, edges, False, False, 8, 3)
-        # genOption(name, edges, False, False, 16, 3)
         
         #colour
-        wordList = genOption(name, img, True, False, 1, 1)
+        wordList = detectText(name, img, True, False, 1, 3)
         wordLists.append(wordList)
         localWordList.append(wordList)
-        # genOption(name, img, True, False, 4, 1)
-        # genOption(name, img, True, False, 8, 1)
-        # genOption(name, img, True, False, 16, 1)
         
         #greyscale
-        wordList = genOption(name, img, False, False, 1, 2)
+        wordList = detectText(name, img, False, False, 1, 4)
         wordLists.append(wordList)
         localWordList.append(wordList)
-        # genOption(name, img, False, False, 4, 2)
-        # genOption(name, img, False, False, 8, 2)
-        # genOption(name, img, False, False, 16, 2)
         
         #inverted, not running :
         # genOption(name, img, True, True, 1, 3)
-        # genOption(name, img, True, True, 4, 3)
-        # genOption(name, img, False, True, 1, 4)
-        # genOption(name, img, False, True, 4, 4)
         
-        ChemicalResults = []
-        UnitsResults = []
-        QuantityResults = []
-        
-        
-        for List in localWordList:
-            i = 0
-            for word in List:
-                if (re.match(ChemicalRegex,word) and word not in ChemicalResults):
-                    ChemicalResults.append(List[i])
-                if (re.match(UnitsRegex,word) and word not in UnitsResults):
-                    UnitsResults.append(List[i-1] +" "+ List[i])
-                if (re.match(QuantityRegex,word) and word not in QuantityResults):
-                    QuantityResults.append(List[i-1] +" "+ List[i])
-                i = i+1
-        print("ChemicalResults", ChemicalResults)
-        print("UnitsResults", UnitsResults)
-        print("QuantityResults", QuantityResults)
+        processText(localWordList,name)
         
     return wordLists
 
-def genOption(name, img, colour, invert, scale, idNumber):
+def processText(localWordList,name):
+    ChemicalResults = []
+    UnitsResults = []
+    QuantityResults = []
+    
+    
+    for List in localWordList:
+        i = 0
+        for word in List:
+            if (re.match(ChemicalRegex,word) and word not in ChemicalResults):
+                ChemicalResults.append(List[i])
+            if (re.match(UnitsRegex,word) and word not in UnitsResults):
+                UnitsResults.append(List[i-1] +" "+ List[i])
+            if (re.match(QuantityRegex,word) and word not in QuantityResults):
+                QuantityResults.append(List[i-1] +" "+ List[i])
+            i = i+1
+    print("ChemicalResults", ChemicalResults)
+    print("UnitsResults", UnitsResults)
+    print("QuantityResults", QuantityResults)
+    
+    if (debugging):
+        np.savetxt(debuggingPath+name.split('.')[0]+" RawText"+outputType,localWordList, fmt = '%-1s', delimiter=",")
+        np.savetxt(debuggingPath+name.split('.')[0]+" ChemicalResults"+outputType,ChemicalResults, fmt = '%-1s', delimiter=",")
+        np.savetxt(debuggingPath+name.split('.')[0]+" UnitsResults"+outputType,UnitsResults, fmt = '%-1s', delimiter=",")
+        np.savetxt(debuggingPath+name.split('.')[0]+" QuantityResults"+outputType,QuantityResults, fmt = '%-1s', delimiter=",")
+        
+    
+
+def detectText(name, img, colour, invert, scale, idNumber):
     if (colour):
         img1 = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
         # print(name + " colour")
@@ -141,29 +148,47 @@ def genOption(name, img, colour, invert, scale, idNumber):
             img1 = cv2.cvtColor(img1,cv2.COLOR_GRAY2RGB)
         wordList = labelImage(img1, colour, False, boxes, scale)
         img1 = cv2.resize(img1,(h,w))
-        cv2.imshow('Result ' +str(idNumber)+'_'+str(scale)+'xS '+name,img1)
+        if (debugging):
+            cv2.imshow('Result ' +str(idNumber)+'_'+str(scale)+'xS '+name,img1)
+            cv2.imwrite(debuggingPath + name.split('.')[0] + " " + str(idNumber)+".png", img1)
         return wordList
     else:
         boxes = pytesseract.image_to_data(img1)
         if (colour==False):
             img1 = cv2.cvtColor(img1,cv2.COLOR_GRAY2RGB)
         wordList = labelImage(img1, colour, False, boxes, scale)
-        cv2.imshow('Result ' +str(idNumber)+' '+name,img1)
+        if (debugging):
+            cv2.imshow('Result ' +str(idNumber)+' '+name,img1)
+            cv2.imwrite(debuggingPath + name.split('.')[0] + " " + str(idNumber)+".png", img1)
         return wordList
 
+def genChemicalRegex():
+    MedicalNames = np.loadtxt("./MedicalWords.csv", dtype = 'str', delimiter = ",")
+    ChemicalBlock ="Amlodipine"
+    for n in MedicalNames:
+        ChemicalBlock = ChemicalBlock+"|"+n
+    ChemicalRegex = ".*("+ChemicalBlock+").*"
+    return ChemicalRegex
+    
+def genQuantityRegex():
+    QuantityRegex = "(.*(tablet|capsule|sachet).*)|(x)"
+    return QuantityRegex
 
-MedicalNames = np.loadtxt("./MedicalWords.csv", dtype = 'str', delimiter = ",")
-ChemicalBlock ="Amlodipine"
-for n in MedicalNames:
-    ChemicalBlock = ChemicalBlock+"|"+n
-# print (ChemicalBlock)
-ChemicalRegex = ".*("+ChemicalBlock+").*"
-# print (ChemicalRegex)
-QuantityRegex = ".*(tablet|capsule).*"
-UnitsRegex = ".*(mg).*"
+def genUnitsRegex():
+    UnitsRegex = ".*(mg).*"
+    return UnitsRegex
+   
+    
 
+
+
+if (debugging):
+    os.mkdir(debuggingPath)
+ChemicalRegex = genChemicalRegex()
+QuantityRegex = genQuantityRegex()
+UnitsRegex = genUnitsRegex()
 names = importPics()
-wordLists = genOptions(names)
+wordLists = processImages(names)
 # print(wordLists)
 np.savetxt(outputPath+"Name"+"_"+timestr+outputType,wordLists, fmt = '%-1s', delimiter=",")
 #np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
