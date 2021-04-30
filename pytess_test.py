@@ -2,7 +2,7 @@
 """
 Created on Mon Mar 22 23:20:56 2021
 
-@author: Lachlan
+@author: Lachlan Matthews
 """
 
 import cv2
@@ -57,12 +57,13 @@ def genOptions(names):
         #edges = cv2.GaussianBlur(edges,(5,5),0)
         edges = cv2.cvtColor(edges,cv2.COLOR_GRAY2RGB)
         invedges = cv2.bitwise_not(edges)
-
-        print(name)
+        print("\n"+name)
         
+        localWordList = []
         #whiteback edges
         wordList = genOption(name, invedges, False, False, 1, 4)
         wordLists.append(wordList)
+        localWordList.append(wordList)
         # genOption(name, invedges, False, False, 4, 4)
         # genOption(name, invedges, False, False, 8, 4)
         # genOption(name, invedges, False, False, 16, 5)
@@ -70,6 +71,7 @@ def genOptions(names):
         #blackback edges
         wordList = genOption(name, edges, False, False, 1, 3)
         wordLists.append(wordList)
+        localWordList.append(wordList)
         # genOption(name, edges, False, False, 4, 3)
         # genOption(name, edges, False, False, 8, 3)
         # genOption(name, edges, False, False, 16, 3)
@@ -77,6 +79,7 @@ def genOptions(names):
         #colour
         wordList = genOption(name, img, True, False, 1, 1)
         wordLists.append(wordList)
+        localWordList.append(wordList)
         # genOption(name, img, True, False, 4, 1)
         # genOption(name, img, True, False, 8, 1)
         # genOption(name, img, True, False, 16, 1)
@@ -84,6 +87,7 @@ def genOptions(names):
         #greyscale
         wordList = genOption(name, img, False, False, 1, 2)
         wordLists.append(wordList)
+        localWordList.append(wordList)
         # genOption(name, img, False, False, 4, 2)
         # genOption(name, img, False, False, 8, 2)
         # genOption(name, img, False, False, 16, 2)
@@ -93,16 +97,36 @@ def genOptions(names):
         # genOption(name, img, True, True, 4, 3)
         # genOption(name, img, False, True, 1, 4)
         # genOption(name, img, False, True, 4, 4)
+        
+        ChemicalResults = []
+        UnitsResults = []
+        QuantityResults = []
+        
+        
+        for List in localWordList:
+            i = 0
+            for word in List:
+                if (re.match(ChemicalRegex,word) and word not in ChemicalResults):
+                    ChemicalResults.append(List[i])
+                if (re.match(UnitsRegex,word) and word not in UnitsResults):
+                    UnitsResults.append(List[i-1] +" "+ List[i])
+                if (re.match(QuantityRegex,word) and word not in QuantityResults):
+                    QuantityResults.append(List[i-1] +" "+ List[i])
+                i = i+1
+        print("ChemicalResults", ChemicalResults)
+        print("UnitsResults", UnitsResults)
+        print("QuantityResults", QuantityResults)
+        
     return wordLists
 
 def genOption(name, img, colour, invert, scale, idNumber):
     if (colour):
         img1 = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
-        print(name + " colour")
+        # print(name + " colour")
         #print(img1)
     else:
         img1 = cv2.cvtColor(img,cv2.COLOR_BGR2GRAY)
-        print(name + " grey")
+        # print(name + " grey")
         #print(img1)
     if (invert):
         img1 = cv2.bitwise_not(img1)
@@ -125,9 +149,19 @@ def genOption(name, img, colour, invert, scale, idNumber):
         return wordList
 
 
+MedicalNames = np.loadtxt("./MedicalWords.csv", dtype = 'str', delimiter = ",")
+ChemicalBlock ="Amlodipine"
+for n in MedicalNames:
+    ChemicalBlock = ChemicalBlock+"|"+n
+# print (ChemicalBlock)
+ChemicalRegex = ".*("+ChemicalBlock+").*"
+# print (ChemicalRegex)
+QuantityRegex = ".*(tablet|capsule).*"
+UnitsRegex = ".*(mg).*"
+
 names = importPics()
 wordLists = genOptions(names)
-print(wordLists)
+# print(wordLists)
 np.savetxt(outputPath+"Name"+"_"+timestr+outputType,wordLists, fmt = '%-1s', delimiter=",")
 #np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
 cv2.waitKey(0)
