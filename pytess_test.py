@@ -52,6 +52,9 @@ def genOptions(names):
     wordLists = []
     for name in names:
         img = cv2.imread(inputPath+name)
+        while (img.shape[0]>1200):
+            img = cv2.resize(img,(int(img.shape[0]/2),int(img.shape[1]/2)))
+        
         # img = cv2.GaussianBlur(img,(7,7),0)
         edges = cv2.Canny(img,100,200)
         #edges = cv2.GaussianBlur(edges,(5,5),0)
