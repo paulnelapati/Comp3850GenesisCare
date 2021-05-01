@@ -4,4 +4,4 @@
 2 implement regex based text prosessing - beta
 3 implement formatted text output (csv output already achieved) - beta
 4 implement filetype restrictions on input - complete
-5 implement docker container 
+5 implement docker container - not started
