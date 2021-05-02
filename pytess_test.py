@@ -23,7 +23,7 @@ inputType = ["png", "jpg", "jpeg"]
 outputPath='./output/'
 outputType='.csv' # .txt or .csv supported
 debuggingPath=outputPath+'Result_'+timestr+"/"
-debugging = True
+debugging = False
 
 ###################################
 
@@ -40,7 +40,7 @@ def genQuantityRegex():
     return QuantityRegex
 
 def genUnitsRegex():
-    UnitsRegex = ".*(mg).*"
+    UnitsRegex = "(.*(mg).*)|(g)"
     return UnitsRegex
    
 def importPics():
@@ -63,14 +63,13 @@ def importPics():
 
 def processImages(names):
     wordLists = []
+    answerList = [["Filename", "Chemical", "Units", "Quanity"]]
     for file in names:
         img = cv2.imread(inputPath+file)
         while (img.shape[0]>800):
             img = cv2.resize(img,(int(img.shape[1]/2),int(img.shape[0]/2)))
-            print(img.shape)
         while (img.shape[0]<400):
             img = cv2.resize(img,(int(img.shape[1]*2),int(img.shape[0]*2)))
-            print(img.shape)
         
         # img = cv2.GaussianBlur(img,(7,7),0)
         edges = cv2.Canny(img,100,200)
@@ -104,9 +103,10 @@ def processImages(names):
         #inverted, not running :
         # genOption(name, img, True, True, 1, 3)
         
-        processText(localWordList,name)
+        bestAnswer = processText(localWordList,name)
+        answerList.append(bestAnswer)
         
-    return wordLists
+    return answerList
 
 
 def detectText(name, img, colour, invert, scale, idNumber):
@@ -158,10 +158,10 @@ def labelImage(img, colour, text, boxes, scale):
     return wordList
 
 def processText(localWordList,name):
+
     ChemicalResults = []
     UnitsResults = []
     QuantityResults = []
-    
     
     for List in localWordList:
         i = 0
@@ -173,6 +173,7 @@ def processText(localWordList,name):
             if (re.match(QuantityRegex,word) and word not in QuantityResults):
                 QuantityResults.append(List[i-1] +" "+ List[i])
             i = i+1
+            
     print("ChemicalResults", ChemicalResults)
     print("UnitsResults", UnitsResults)
     print("QuantityResults", QuantityResults)
@@ -182,7 +183,30 @@ def processText(localWordList,name):
         np.savetxt(debuggingPath+name+" ChemicalResults"+outputType,ChemicalResults, fmt = '%-1s', delimiter=",")
         np.savetxt(debuggingPath+name+" UnitsResults"+outputType,UnitsResults, fmt = '%-1s', delimiter=",")
         np.savetxt(debuggingPath+name+" QuantityResults"+outputType,QuantityResults, fmt = '%-1s', delimiter=",")
-        
+
+    ChemicalAnswer  = bestChemicalAnswer(ChemicalResults)
+    UnitsAnswer     = bestUnitsAnswer(UnitsResults)
+    QuantityAnswer  = bestQuantityAnswer(QuantityResults)
+    bestAnswer = [name, ChemicalAnswer, UnitsAnswer, QuantityAnswer]
+    return bestAnswer
+
+def bestChemicalAnswer(ChemicalResults):
+    if (len(ChemicalResults) >0):
+        return ChemicalResults[0]
+    else:
+        return "-"
+    
+def bestUnitsAnswer(UnitsResults):
+    if (len(UnitsResults) >0):
+        return UnitsResults[0]
+    else:
+        return "-"
+    
+def bestQuantityAnswer(QuantityResults):
+    if (len(QuantityResults) >0):
+        return QuantityResults[0]
+    else:
+        return "-"
     
 # structure:
 # main
@@ -192,7 +216,7 @@ def processText(localWordList,name):
 #       detectText
 #           labelImage
 #       processText
-#
+#           bestAnswer
 
 
 if (debugging):
@@ -201,9 +225,9 @@ ChemicalRegex = genChemicalRegex()
 QuantityRegex = genQuantityRegex()
 UnitsRegex = genUnitsRegex()
 names = importPics()
-wordLists = processImages(names)
-# print(wordLists)
-#np.savetxt(outputPath+"Name"+"_"+timestr+outputType,wordLists, fmt = '%-1s', delimiter=",")
+answerList = processImages(names)
+print(answerList)
+np.savetxt(outputPath+"Result"+"_"+timestr+outputType,answerList, fmt = '%-1s', delimiter=",")
 #np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
 cv2.waitKey(0)
 cv2.destroyAllWindows()
