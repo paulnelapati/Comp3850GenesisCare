@@ -25,7 +25,7 @@ testPath='./testcases/'
 outputPath='./output/'
 outputType='.csv'           # .txt or .csv supported
 debuggingPath=outputPath+'Result_'+timestr+"/"
-imageWidthLim = [400, 800]  # max should be 2xmin+
+imageWidthLim = [400, 800]  # Max should be 2xMin+
 debugging = False           #enable view and save of intermediary images and text
 
 ###################################
@@ -44,6 +44,7 @@ debugging = False           #enable view and save of intermediary images and tex
 # QuantityRegex = genQuantityRegex()
 # UnitsRegex = genUnitsRegex()
 
+#main function
 def runProgram():
     if (debugging):
         start = time.time()
@@ -60,6 +61,8 @@ def runProgram():
         cv2.waitKey(0)
         cv2.destroyAllWindows()
 
+#generats a dictionary contain strings or string arrays 
+#they are used to process the raw text into formatted text
 def genRegex():
     RegexStrings = {
         "ChemicalRegex": genChemicalRegex(),
@@ -68,6 +71,8 @@ def genRegex():
     }
     return RegexStrings
 
+#the chemical name (active ingredient) is from a csv file 
+#that is able to be edited/added to independantly from this file
 def genChemicalRegex():
     MedicalNames = np.loadtxt("./MedicalWords.csv", dtype = 'str', delimiter = ",")
     ChemicalBlock ="Amlodipine"
@@ -76,14 +81,20 @@ def genChemicalRegex():
     ChemicalRegex = ".*("+ChemicalBlock+").*"
     return ChemicalRegex
     
+#[0] detect keyword associated with value
+#[1] guarantee it's a number with no capital Oh's instead of zero's
 def genQuantityRegex():
     QuantityRegex = ["(.*(tablet|capsule|sachet).*)|(x)" , ".*[0-9]+[^O].*"]
     return QuantityRegex
 
+#[0] detect keyword associated with value
+#[1] guarantee it's a number with no capital Oh's instead of zero's
 def genUnitsRegex():
     UnitsRegex =[ "(.*(mg).*)|(g)", ".*[0-9]+[^O].*"]
     return UnitsRegex
    
+#get a list of file names of the correct 
+#file type from the configured input folder
 def importPics():
     arr = os.listdir(inputPath)
     # print(arr)
@@ -96,6 +107,10 @@ def importPics():
             fileList.append(a)
     return fileList
 
+#resize the images to be roughly similar in size
+#send to image pre-processing to generate augmented images and raw text
+#raw text is sent to text processor
+#return formatted text array
 def processImages(names, RegexStrings):
     wordLists = []
     answerList = [["Filename", "Chemical", "Units", "Quanity"]]
@@ -137,14 +152,19 @@ def processImages(names, RegexStrings):
         localWordList.append(wordList)
         
         #inverted, not running :
-        # genOption(name, img, True, True, 1, 3)
+        # wordList = detectText(name, img, True, True, 1, 5)
+        # wordLists.append(wordList)
+        # localWordList.append(wordList)
         
         bestAnswer = processText(localWordList,name, RegexStrings)
         answerList.append(bestAnswer)
         
     return answerList
 
-
+#augmented images have pre-processing stages applied
+#text in images is detected
+#these images are sent to have text lebelled
+#return raw text
 def detectText(name, img, colour, invert, scale, idNumber):
     if (colour):
         img1 = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
@@ -178,6 +198,8 @@ def detectText(name, img, colour, invert, scale, idNumber):
             cv2.imwrite(debuggingPath + name + " " + str(idNumber)+".png", img1)
         return wordList
 
+#images are labelled and raw text array is generated
+#return raw text
 def labelImage(img, colour, text, boxes, scale):
     wordList = []
     for x,b in enumerate(boxes.splitlines()):
@@ -193,6 +215,8 @@ def labelImage(img, colour, text, boxes, scale):
     #print(wordList)
     return wordList
 
+#raw text is inputted, and using regex a processed array is produced
+#return processed text
 def processText(localWordList,name, RegexStrings):
 
     ChemicalRegex = RegexStrings["ChemicalRegex"]
@@ -234,6 +258,9 @@ def processText(localWordList,name, RegexStrings):
     bestAnswer = [name, ChemicalAnswer, UnitsAnswer, QuantityAnswer]
     return bestAnswer
 
+#given a list of possible answers, the best is picked
+#currently picks first, advanced functionality is unimplemented
+#if list is empty, return - (empty lists have no [0])
 def bestChemicalAnswer(ChemicalResults):
     if (len(ChemicalResults) >0):
         return ChemicalResults[0]
@@ -252,7 +279,8 @@ def bestQuantityAnswer(QuantityResults):
     else:
         return "-"
   
-    
+#run program by using the test file or the run file, 
+#not the elements file    
 # runProgram()
 
     
