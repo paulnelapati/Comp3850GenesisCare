@@ -32,7 +32,7 @@ debugging = False           #enable view and save of intermediary images and tex
 
 start = time.time()
 
-
+#retrieves the name of the newest .csv in the output folder
 def importResult():
     arr = os.listdir(outputPath)
     # print(arr)
@@ -42,6 +42,8 @@ def importResult():
             fileList.append(a)
     return fileList[len(fileList)-1]
 
+#retrieves the list of test cases in the testcase folder
+#currently only returns the first file it finds
 def importTestCase():
     arr = os.listdir(testPath)
     # print(arr)
@@ -51,6 +53,10 @@ def importTestCase():
             fileList.append(a)
     return fileList[0]
 
+#loop over the output result and the testcase arrays 
+#element by element compare them using regex (if either is a subset of the other)
+#use regex to remove single brackets and other grammar that can break regex statements
+#return the percentage of times a match was found 
 def calculateAccuracy(Result, Testcase):
     count = 0
     total = 0
@@ -78,8 +84,10 @@ def calculateAccuracy(Result, Testcase):
         return 0
     return round(count/total*100, 2)
 
+#run the main program
 PE.runProgram()
 
+#import the data and calculate the accuracy
 arr1 = importResult()
 Result =    MedicalNames = np.loadtxt(outputPath+arr1, dtype = 'str', delimiter = ",")
 arr2 = importTestCase()
@@ -91,7 +99,7 @@ Testcase =  MedicalNames = np.loadtxt(testPath+arr2, dtype = 'str', delimiter = 
 accuracy = calculateAccuracy(Result, Testcase)
 print("accuracy: "+str(accuracy)+"%")
 
-
+#print the time the system took to run
 end = time.time()
 print ("Testtime: "+ str(round(end-start)) + " seconds")
 
