@@ -14,18 +14,59 @@ import os
 import time
 import re
 
+
 ###################################
 
 pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 inputPath = "./input/"
 inputType = ["png", "jpg", "jpeg"]
+testPath='./testcases/'
 outputPath='./output/'
-outputType='.csv' # .txt or .csv supported
+outputType='.csv'           # .txt or .csv supported
 debuggingPath=outputPath+'Result_'+timestr+"/"
-debugging = False
+imageWidthLim = [400, 800]  # max should be 2xmin+
+debugging = False           #enable view and save of intermediary images and text
 
 ###################################
+
+# structure:
+# main
+#   genRegex
+#   importPics
+#   processImages
+#       detectText
+#           labelImage
+#       processText
+#           bestAnswer
+
+# ChemicalRegex = genChemicalRegex()
+# QuantityRegex = genQuantityRegex()
+# UnitsRegex = genUnitsRegex()
+
+def runProgram():
+    if (debugging):
+        start = time.time()
+        os.mkdir(debuggingPath)
+    RegexStrings = genRegex()
+    names = importPics()
+    answerList = processImages(names, RegexStrings)
+    print(answerList)
+    np.savetxt(outputPath+"Result_"+timestr+outputType,answerList, fmt = '%-1s', delimiter=",")
+    #np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
+    if (debugging):
+        end = time.tim()
+        print ("Runtime: "+ str(round(end-start)) + " seconds")
+        cv2.waitKey(0)
+        cv2.destroyAllWindows()
+
+def genRegex():
+    RegexStrings = {
+        "ChemicalRegex": genChemicalRegex(),
+        "QuantityRegex": genQuantityRegex(),
+        "UnitsRegex": genUnitsRegex()
+    }
+    return RegexStrings
 
 def genChemicalRegex():
     MedicalNames = np.loadtxt("./MedicalWords.csv", dtype = 'str', delimiter = ",")
@@ -36,16 +77,16 @@ def genChemicalRegex():
     return ChemicalRegex
     
 def genQuantityRegex():
-    QuantityRegex = "(.*(tablet|capsule|sachet).*)|(x)"
+    QuantityRegex = ["(.*(tablet|capsule|sachet).*)|(x)" , ".*[0-9]+[^O].*"]
     return QuantityRegex
 
 def genUnitsRegex():
-    UnitsRegex = "(.*(mg).*)|(g)"
+    UnitsRegex =[ "(.*(mg).*)|(g)", ".*[0-9]+[^O].*"]
     return UnitsRegex
    
 def importPics():
     arr = os.listdir(inputPath)
-    print(arr)
+    # print(arr)
     fileList = []
     fileType = inputType[0]
     for t in inputType:
@@ -55,20 +96,15 @@ def importPics():
             fileList.append(a)
     return fileList
 
-# def rotate_image(image, angle):
-#   image_center = tuple(np.array(image.shape[1::-1]) / 2)
-#   rot_mat = cv2.getRotationMatrix2D(image_center, angle, 1.0)
-#   result = cv2.warpAffine(image, rot_mat, image.shape[1::-1], flags=cv2.INTER_LINEAR)
-#   return result
-
-def processImages(names):
+def processImages(names, RegexStrings):
     wordLists = []
     answerList = [["Filename", "Chemical", "Units", "Quanity"]]
+    imageWidthLim[1] = max(imageWidthLim[1], imageWidthLim[0]*2)
     for file in names:
         img = cv2.imread(inputPath+file)
-        while (img.shape[0]>800):
+        while (img.shape[0]>imageWidthLim[1]):
             img = cv2.resize(img,(int(img.shape[1]/2),int(img.shape[0]/2)))
-        while (img.shape[0]<400):
+        while (img.shape[0]<imageWidthLim[0]):
             img = cv2.resize(img,(int(img.shape[1]*2),int(img.shape[0]*2)))
         
         # img = cv2.GaussianBlur(img,(7,7),0)
@@ -103,7 +139,7 @@ def processImages(names):
         #inverted, not running :
         # genOption(name, img, True, True, 1, 3)
         
-        bestAnswer = processText(localWordList,name)
+        bestAnswer = processText(localWordList,name, RegexStrings)
         answerList.append(bestAnswer)
         
     return answerList
@@ -157,7 +193,11 @@ def labelImage(img, colour, text, boxes, scale):
     #print(wordList)
     return wordList
 
-def processText(localWordList,name):
+def processText(localWordList,name, RegexStrings):
+
+    ChemicalRegex = RegexStrings["ChemicalRegex"]
+    QuantityRegex = RegexStrings["QuantityRegex"]
+    UnitsRegex = RegexStrings["UnitsRegex"]
 
     ChemicalResults = []
     UnitsResults = []
@@ -168,10 +208,14 @@ def processText(localWordList,name):
         for word in List:
             if (re.match(ChemicalRegex,word) and word not in ChemicalResults):
                 ChemicalResults.append(List[i])
-            if (re.match(UnitsRegex,word) and word not in UnitsResults):
-                UnitsResults.append(List[i-1] +" "+ List[i])
-            if (re.match(QuantityRegex,word) and word not in QuantityResults):
-                QuantityResults.append(List[i-1] +" "+ List[i])
+            if (re.match(UnitsRegex[0],word) and word not in UnitsResults):
+                phrase = List[i-1] +" "+ List[i]
+                if (re.match(UnitsRegex[1],phrase) and phrase not in UnitsResults):
+                    UnitsResults.append(phrase)
+            if (re.match(QuantityRegex[0],word) and word not in QuantityResults):
+                phrase = List[i-1] +" "+ List[i]
+                if (re.match(QuantityRegex[1],phrase) and phrase not in QuantityResults):
+                    QuantityResults.append(List[i-1] +" "+ List[i])
             i = i+1
             
     print("ChemicalResults", ChemicalResults)
@@ -207,29 +251,8 @@ def bestQuantityAnswer(QuantityResults):
         return QuantityResults[0]
     else:
         return "-"
+  
     
-# structure:
-# main
-#   genRegex
-#   importPics
-#   processImages
-#       detectText
-#           labelImage
-#       processText
-#           bestAnswer
+# runProgram()
 
-
-if (debugging):
-    os.mkdir(debuggingPath)
-ChemicalRegex = genChemicalRegex()
-QuantityRegex = genQuantityRegex()
-UnitsRegex = genUnitsRegex()
-names = importPics()
-answerList = processImages(names)
-print(answerList)
-np.savetxt(outputPath+"Result"+"_"+timestr+outputType,answerList, fmt = '%-1s', delimiter=",")
-#np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
-cv2.waitKey(0)
-cv2.destroyAllWindows()
     
-
