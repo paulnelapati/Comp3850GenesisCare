@@ -55,7 +55,7 @@ def runProgram():
     np.savetxt(outputPath+"Result_"+timestr+outputType,answerList, fmt = '%-1s', delimiter=",")
     #np.savetxt(outputPath+"Name.csv",wordLists, fmt = '%-1s', delimiter=",")
     if (debugging):
-        end = time.tim()
+        end = time.time()
         print ("Runtime: "+ str(round(end-start)) + " seconds")
         cv2.waitKey(0)
         cv2.destroyAllWindows()
