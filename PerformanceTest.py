@@ -60,26 +60,35 @@ def importTestCase():
 def calculateAccuracy(Result, Testcase):
     count = 0
     total = 0
+    print("i, j, Result, r, t:  i j Result Processed Testcase")
     for i in range(len(Result)):
+        #ignore row/col 0 as they are headers
         if (i==0):
             continue
         for j in range(len(Result[i])):
             if (j==0):
                 continue
-            process = re.search("(\w+|/|\-| )*(\((\w+|/|\-| )*\))*(\w+|/|\-| )*", Result[i][j])
+            #have only 0 brackets or a bracket pair
+            process = re.search(r"(\w+|/|\-| )*(\((\w+|/|\-| )*\))*(\w+|/|\-| )*", Result[i][j])
             # process2 = re.search("(\w+|/|\-| )*(\((\w+|/|\-| )*\))*(\w+|/|\-| )*", Result[i][j])
             # if(process2):
             #     print("\nbrackets: ", process2)
             r = process[0]
+            # r = re.escape(Result[i][j])
+            # t = re.escape(Testcase[i][j])
+            # r = (Result[i][j])
             t = Testcase[i][j]
-            # r.replaceAll("[^a-zA-Z0-9]","")
-            # t.replaceAll("[^a-zA-Z0-9]","")
-            print("i, j, Result, r, t: ", i, j, Result[i][j], r, t)
+            # print("i, j, Result, r, t: ", i, j, Result[i][j], r, t)
+            #remove spaces and other annoyign characters
+            R = re.sub("[^a-zA-Z0-9\-\/\(\)]","", r)
+            T = re.sub("[^a-zA-Z0-9\-\/\(\)]","", t)
+            print("i, j, Result, r, t: ", i, j, Result[i][j], R, T)
             # print (re.match(".*"+r+".*",t), re.match(".*"+t+".*",r))
-            if (re.match(".*"+r+".*",t) or re.match(".*"+t+".*",r)):
+            
+            total = total + 1
+            if (re.match(".*"+R+".*",T) or re.match(".*"+T+".*",R)):
                 count = count + 1
                 print("count, total: ", count, total)
-            total = total + 1
     if (count==0):  
         return 0
     return round(count/total*100, 2)
