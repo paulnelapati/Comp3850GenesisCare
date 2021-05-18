@@ -17,16 +17,37 @@ Need to install
 * Google Teseract at (confiurable):
     * C:\Program Files\Tesseract-OCR\tesseract.exe
 
+## Format
+Input:
+* Allowed file types (configurable) are .jpg, .jpeg, and .png; Other files will be ignored
+
+Output:
+* Formatted .csv file
+* Top row is headings, describing the field below
+* Left column is the name of the file the data came from
+* Undetermined data filled with "-"
+
+Testcases:
+* Same format as Output
 ## Usage
 Steps to use:
 1. Place target images in the input folder (configuable):
     * ./input
-2. Run RunDetection 
+2. Run RunDetection.py 
 3. Output will be Reult_date_time.csv in the output folder (configurable):
     * ./output
+4. (Optional) Enable Debugging=True in ProcessingElements.py to have intermediary data saved to (configurable):
+    * ./output/Result_date_time/
+
+## Testing
+Steps to test:
+1. Put testcase images and expected output in their relevant folders (configurable):
+    * Input images: ./input
+    * Expected output: ./testcases
+2. Run PerformanceTest.py
 
 # Performance Limitations
-Version 0.5
+For Version 0.5
 
 ## Success
 Currently performs at 33-47% success rate on results 2-4 (excluding brand name) for a given testset of reasonable images (correct orientation, angle, resolution).
