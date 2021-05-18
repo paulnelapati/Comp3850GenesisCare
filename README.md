@@ -1,5 +1,9 @@
 # Comp3850GenesisCare - Medicine Box Reader
-Read the important information from a given picture
+This project is designed to produce a table of results to summarise the important information from a given picture of a medication box including:
+1. Brand Name
+2. Active Ingredient
+3. Concentration/Dosage
+4. Quantity In Box
 
 # Installation
 Clone the repo to any location  
@@ -25,7 +29,7 @@ Steps to use:
 Version 0.5
 
 ## Success
-Currently performs at 33-47% success rate
+Currently performs at 33-47% success rate on results 2-4 (excluding brand name) for a given testset of reasonable images (correct orientation, angle, resolution).
 
 ## Drawbacks
 Can not yet handle images with multiple boxes.  
