@@ -4,6 +4,7 @@ This project is designed to produce a table of results to summarise the importan
 2. Active Ingredient
 3. Concentration/Dosage
 4. Quantity In Box
+The purpose of this is to automate the process of acquiring user medical records to save time for medical staff and increase the opporational efficiency of the business
 
 # Installation
 Clone the repo to any location  
@@ -46,8 +47,15 @@ Steps to test:
     * Expected output: ./testcases
 2. Run PerformanceTest.py
 
-# Performance Limitations
+# Performance
 For Version 0.5
+
+## Features
+Current:
+* Can detect the important text from simple images
+Planned:
+* Can use a document scanner function to detect text in difficult images
+* Utilise Docker to allow for easy devloyment
 
 ## Success
 Currently performs at 33-47% success rate on results 2-4 (excluding brand name) for a given testset of reasonable images (correct orientation, angle, resolution).
