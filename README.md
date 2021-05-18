@@ -4,6 +4,7 @@ This project is designed to produce a table of results to summarise the importan
 2. Active Ingredient
 3. Concentration/Dosage
 4. Quantity In Box  
+
 The purpose of this is to automate the process of acquiring user medical records to save time for medical staff and increase the opporational efficiency of the business
 
 # Installation
