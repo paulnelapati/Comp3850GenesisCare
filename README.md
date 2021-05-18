@@ -2,7 +2,7 @@
 Read the important information from a given picture
 
 # Installation
-clone the repo to any location  
+Clone the repo to any location  
 git clone https://github.com/LachlanMatt/Comp3850GenesisCare
 
 ## Requirements
@@ -28,5 +28,7 @@ Version 0.5
 Currently performs at 33-47% success rate
 
 ## Drawbacks
-Can not yet handle images with multiple boxes  
-Can not handle rotated, flipped, or other odd orientations
+Can not yet handle images with multiple boxes.  
+Can not handle rotated, flipped, or other odd orientations.  
+Performs poorly on low resolution images.  
+Only tested on Windows, Docker implementation pending.  
