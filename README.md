@@ -3,7 +3,7 @@ This project is designed to produce a table of results to summarise the importan
 1. Brand Name
 2. Active Ingredient
 3. Concentration/Dosage
-4. Quantity In Box
+4. Quantity In Box  
 The purpose of this is to automate the process of acquiring user medical records to save time for medical staff and increase the opporational efficiency of the business
 
 # Installation
@@ -33,18 +33,19 @@ Testcases:
 ## Usage
 Steps to use:
 1. Place target images in the input folder (configuable):
-    * ./input
-2. Run RunDetection.py 
-3. Output will be Reult_date_time.csv in the output folder (configurable):
-    * ./output
-4. (Optional) Enable Debugging=True in ProcessingElements.py to have intermediary data saved to (configurable):
+    * ./input/
+2. (Optional) Enable Debugging=True in ProcessingElements.py to have intermediary data saved to (configurable):
     * ./output/Result_date_time/
+3. Run RunDetection.py 
+4. Output will be Reult_date_time.csv in the output folder (configurable):
+    * ./output/
+
 
 ## Testing
 Steps to test:
 1. Put testcase images and expected output in their relevant folders (configurable):
-    * Input images: ./input
-    * Expected output: ./testcases
+    * Input images: ./input/
+    * Expected output: ./testcases/
 2. Run PerformanceTest.py
 
 # Performance
@@ -61,7 +62,7 @@ Planned:
 Currently performs at 33-47% success rate on results 2-4 (excluding brand name) for a given testset of reasonable images (correct orientation, angle, resolution).
 
 ## Drawbacks
-Can not yet handle images with multiple boxes.  
-Can not handle rotated, flipped, or other odd orientations.  
-Performs poorly on low resolution images.  
-Only tested on Windows, Docker implementation pending.  
+* Can not yet handle images with multiple boxes.  
+* Can not handle rotated, flipped, or other odd orientations.  
+* Performs poorly on low resolution images.  
+* Only tested on Windows, Docker implementation pending.  
