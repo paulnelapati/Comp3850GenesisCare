@@ -94,7 +94,7 @@ def calculateAccuracy(Result, Testcase):
     return round(count/total*100, 2)
 
 #run the main program
-PE.runProgram()
+# PE.runProgram()
 
 #import the data and calculate the accuracy
 arr1 = importResult()

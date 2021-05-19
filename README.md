@@ -67,3 +67,20 @@ Currently performs at 33-47% success rate on results 2-4 (excluding brand name) 
 * Can not handle rotated, flipped, or other odd orientations.  
 * Performs poorly on low resolution images.  
 * Only tested on Windows, Docker implementation pending.  
+
+# Future Plans
+
+## Short term 
+The short term plans/goals of the projects are:
+* Implement a document scanner to increase the range of images the system can successfully process
+* Implement Docker integration to allow for easier deployment and development of the API
+
+## Medium term
+Plans that we would like to do but will likely fall outside the scope time fo the project
+* Comunications protocols to allow for easier integration fo the API
+* AI upscaling and downscaling of images to increase performance
+
+## Long term
+Plans that are well outside the scope of the project but could form the basis of a future revision
+* rewriting the core image functionality of the project to be more modular and accomodating of different text recognition models
+* rewriting the project in C/C++ to increase speed and match the language of many text recognition packages like google OCR
