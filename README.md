@@ -5,7 +5,7 @@ This project is designed to produce a table of results to summarise the importan
 3. Concentration/Dosage
 4. Quantity In Box  
 
-The purpose of this is to automate the process of acquiring user medical records to save time for medical staff and increase the opporational efficiency of the business
+The purpose of this is to automate the process of acquiring user medical records to save time for medical staff and increase the operational efficiency of the business
 
 # Installation
 Clone the repo to any location  
@@ -74,6 +74,9 @@ Currently performs at 33-47% success rate on results 2-4 (excluding brand name) 
 The short term plans/goals of the projects are:
 * Implement a document scanner to increase the range of images the system can successfully process
 * Implement Docker integration to allow for easier deployment and development of the API
+* Expand medical dictionary for brand and chemical names through the use of the PBS
+    * https://www.pbs.gov.au/browse/medicine-listing
+* Implement different regex systems for liquid/cream and solid/pill/capsule medicines
 
 ## Medium term
 Plans that we would like to do but will likely fall outside the scope time fo the project
