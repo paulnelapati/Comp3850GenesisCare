@@ -86,5 +86,5 @@ Plans that we would like to do but will likely fall outside the scope time fo th
 
 ## Long term
 Plans that are well outside the scope of the project but could form the basis of a future revision
-* rewriting the core image functionality of the project to be more modular and accomodating of different text recognition models
-* rewriting the project in C/C++ to increase speed and match the language of many text recognition packages like google OCR
+* Rewriting the core image functionality of the project to be more modular and accomodating of different text recognition models
+* Rewriting the project in C/C++ to increase speed and match the language of many text recognition packages like google OCR
