@@ -73,7 +73,9 @@ Currently performs at 33-47% success rate on results 2-4 (excluding brand name) 
 ## Short term 
 The short term plans/goals of the projects are:
 * Implement a document scanner to increase the range of images the system can successfully process
+   * OnlineDocScanner.py is a (low-efficacy) implementation of this
 * Implement Docker integration to allow for easier deployment and development of the API
+   * https://www.docker.com/
 * Expand medical dictionary for brand and chemical names through the use of the PBS
     * https://www.pbs.gov.au/browse/medicine-listing
 * Implement different regex systems for liquid/cream and solid/pill/capsule medicines
