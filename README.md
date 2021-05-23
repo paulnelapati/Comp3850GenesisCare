@@ -13,11 +13,24 @@ git clone https://github.com/LachlanMatt/Comp3850GenesisCare
 
 ## Requirements
 Need to install 
+* github desktop
+  * https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop
+* A Python editor 
+  * I use Spyder as it's used in Comp3160, though VSCode and other editors should be useable too
+  * https://www.spyder-ide.org/
 * Cv2 
+   * pip install opencv-python
 * Numpy 
+   * pip install numpy
 * Pytesseract
+   * pip install pytesseract
 * Google Teseract at (confiurable):
+    * https://tesseract-ocr.github.io/tessdoc/Home.html
+    * Guide: https://guides.library.illinois.edu/c.php?g=347520&p=4121425
     * C:\Program Files\Tesseract-OCR\tesseract.exe
+    * Win64 download: https://github.com/UB-Mannheim/tesseract/wiki 
+    * (Mac untested)
+    * Mac install (using homebrew): brew install tesseract 
 
 ## Format
 Input:
@@ -73,17 +86,23 @@ Currently performs at 33-47% success rate on results 2-4 (excluding brand name) 
 ## Short term 
 The short term plans/goals of the projects are:
 * Implement a document scanner to increase the range of images the system can successfully process
+   * OnlineDocScanner.py is a (low-efficacy) implementation of this
 * Implement Docker integration to allow for easier deployment and development of the API
+   * https://www.docker.com/
 * Expand medical dictionary for brand and chemical names through the use of the PBS
     * https://www.pbs.gov.au/browse/medicine-listing
 * Implement different regex systems for liquid/cream and solid/pill/capsule medicines
+   * Quantities have different formatting, such as 30 tablets vs 300mL
+* Add a config file to unify the re-used settings/variables such as debugging and file paths
+   * ProcessingElements, RunDetector, PerformanceTest all have similar/identical variables at the start
 
 ## Medium term
 Plans that we would like to do but will likely fall outside the scope time fo the project
 * Comunications protocols to allow for easier integration fo the API
 * AI upscaling and downscaling of images to increase performance
+   * Simple resize() commands are currently used in ProcessingElements.py
 
 ## Long term
 Plans that are well outside the scope of the project but could form the basis of a future revision
-* rewriting the core image functionality of the project to be more modular and accomodating of different text recognition models
-* rewriting the project in C/C++ to increase speed and match the language of many text recognition packages like google OCR
+* Rewriting the core image functionality of the project to be more modular and accomodating of different text recognition models
+* Rewriting the project in C/C++ to increase speed and match the language of many text recognition packages like google OCR
