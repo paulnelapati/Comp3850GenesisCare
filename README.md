@@ -79,12 +79,15 @@ The short term plans/goals of the projects are:
 * Expand medical dictionary for brand and chemical names through the use of the PBS
     * https://www.pbs.gov.au/browse/medicine-listing
 * Implement different regex systems for liquid/cream and solid/pill/capsule medicines
+   * Quantities have different formatting, such as 30 tablets vs 300mL
 * Add a config file to unify the re-used settings/variables such as debugging and file paths
+   * ProcessingElements, RunDetector, PerformanceTest all have similar/identical variables at the start
 
 ## Medium term
 Plans that we would like to do but will likely fall outside the scope time fo the project
 * Comunications protocols to allow for easier integration fo the API
 * AI upscaling and downscaling of images to increase performance
+   * simple resize() commands are currently used in ProcessingElements.py
 
 ## Long term
 Plans that are well outside the scope of the project but could form the basis of a future revision
