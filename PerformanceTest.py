@@ -67,6 +67,7 @@ def calculateAccuracy(Result, Testcase):
             continue
         for j in range(len(Result[i])):
             if (j==0):
+                print("\n"+Result[i][j])
                 continue
             #have only 0 brackets or a bracket pair
             process = re.search(r"(\w+|/|\-| )*(\((\w+|/|\-| )*\))*(\w+|/|\-| )*", Result[i][j])
@@ -106,7 +107,7 @@ Testcase =  MedicalNames = np.loadtxt(testPath+arr2, dtype = 'str', delimiter = 
 # print (Result)
 # print (Testcase)
 accuracy = calculateAccuracy(Result, Testcase)
-print("accuracy: "+str(accuracy)+"%")
+print("\naccuracy: "+str(accuracy)+"%")
 
 #print the time the system took to run
 end = time.time()
