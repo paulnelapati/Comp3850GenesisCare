@@ -16,7 +16,7 @@ Need to install
 * github desktop
   * https://docs.github.com/en/desktop/installing-and-configuring-github-desktop/installing-and-authenticating-to-github-desktop/installing-github-desktop
 * A Python editor 
-  * I use Spyder as it's used in Comp3160, those VSCode and other editors should be useable too
+  * I use Spyder as it's used in Comp3160, though VSCode and other editors should be useable too
   * https://www.spyder-ide.org/
 * Cv2 
    * pip install opencv-python
