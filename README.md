@@ -77,6 +77,7 @@ The short term plans/goals of the projects are:
 * Expand medical dictionary for brand and chemical names through the use of the PBS
     * https://www.pbs.gov.au/browse/medicine-listing
 * Implement different regex systems for liquid/cream and solid/pill/capsule medicines
+* Add a config file to unify the re-used settings/variables such as debugging and file paths
 
 ## Medium term
 Plans that we would like to do but will likely fall outside the scope time fo the project
