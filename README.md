@@ -21,6 +21,7 @@ Need to install
     * https://tesseract-ocr.github.io/tessdoc/Home.html
     * Win64 download: https://github.com/UB-Mannheim/tesseract/wiki 
     * Mac install (using homebrew): brew install tesseract 
+    * Guide: https://guides.library.illinois.edu/c.php?g=347520&p=4121425
 
 ## Format
 Input:
