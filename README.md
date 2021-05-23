@@ -14,14 +14,18 @@ git clone https://github.com/LachlanMatt/Comp3850GenesisCare
 ## Requirements
 Need to install 
 * Cv2 
+   * pip install opencv-python
 * Numpy 
+   * pip install numpy
 * Pytesseract
+   * pip install pytesseract
 * Google Teseract at (confiurable):
-    * C:\Program Files\Tesseract-OCR\tesseract.exe
     * https://tesseract-ocr.github.io/tessdoc/Home.html
-    * Win64 download: https://github.com/UB-Mannheim/tesseract/wiki 
-    * Mac install (using homebrew): brew install tesseract 
     * Guide: https://guides.library.illinois.edu/c.php?g=347520&p=4121425
+    * C:\Program Files\Tesseract-OCR\tesseract.exe
+    * Win64 download: https://github.com/UB-Mannheim/tesseract/wiki 
+    * (Mac untested)
+    * Mac install (using homebrew): brew install tesseract 
 
 ## Format
 Input:
