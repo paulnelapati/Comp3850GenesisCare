@@ -91,7 +91,7 @@ The short term plans/goals of the projects are:
 Plans that we would like to do but will likely fall outside the scope time fo the project
 * Comunications protocols to allow for easier integration fo the API
 * AI upscaling and downscaling of images to increase performance
-   * simple resize() commands are currently used in ProcessingElements.py
+   * Simple resize() commands are currently used in ProcessingElements.py
 
 ## Long term
 Plans that are well outside the scope of the project but could form the basis of a future revision
