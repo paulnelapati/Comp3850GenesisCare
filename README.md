@@ -19,7 +19,8 @@ Need to install
 * Google Teseract at (confiurable):
     * C:\Program Files\Tesseract-OCR\tesseract.exe
     * https://tesseract-ocr.github.io/tessdoc/Home.html
-    * https://github.com/UB-Mannheim/tesseract/wiki win64 download
+    * Win64 download: https://github.com/UB-Mannheim/tesseract/wiki 
+    * Mac install (using homebrew): brew install tesseract 
 
 ## Format
 Input:
