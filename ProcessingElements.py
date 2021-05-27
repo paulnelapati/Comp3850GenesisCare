@@ -13,11 +13,12 @@ import pytesseract
 import os
 import time
 import re
+import sys
 
 
 ###################################
-
-pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+if sys.platform == 'Windows':
+    pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
 timestr = time.strftime("%Y-%m-%d_%H-%M-%S")
 inputPath = "./input/"
 inputType = ["png", "jpg", "jpeg"]
