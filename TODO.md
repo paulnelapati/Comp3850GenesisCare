@@ -4,7 +4,7 @@
 2 implement regex based text prosessing - optimisation
 3 implement formatted text output (csv output already achieved) - complete
 4 implement filetype restrictions on input - complete
-5 implement docker container - not started
+5 implement docker container - started
 6 implement a config file for variables (in, out, filetype, debugging, etc) - not started
 7 create a test program to evaluate model performance - beta
 8 implement checks for solids and liquids/pastes, as formatting is different
