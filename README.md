@@ -89,6 +89,7 @@ The short term plans/goals of the projects are:
    * OnlineDocScanner.py is a (low-efficacy) implementation of this
 * Implement Docker integration to allow for easier deployment and development of the API
    * https://www.docker.com/
+   * https://hub.docker.com/search?q=&type=edition&offering=community
 * Expand medical dictionary for brand and chemical names through the use of the PBS
     * https://www.pbs.gov.au/browse/medicine-listing
 * Implement different regex systems for liquid/cream and solid/pill/capsule medicines
