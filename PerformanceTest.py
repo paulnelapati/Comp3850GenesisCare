@@ -95,13 +95,13 @@ def calculateAccuracy(Result, Testcase):
     return round(count/total*100, 2)
 
 #run the main program
-# PE.runProgram()
+PE.runProgram()
 
 #import the data and calculate the accuracy
 arr1 = importResult()
-Result =    MedicalNames = np.loadtxt(outputPath+arr1, dtype = 'str', delimiter = ",")
+Result = np.loadtxt(outputPath+arr1, dtype = 'str', delimiter = ",")
 arr2 = importTestCase()
-Testcase =  MedicalNames = np.loadtxt(testPath+arr2, dtype = 'str', delimiter = ",")
+Testcase = np.loadtxt(testPath+arr2, dtype = 'str', delimiter = ",")
 # print (arr1)
 # print (arr2)
 # print (Result)
